@@ -1,417 +1,418 @@
-import React, { useState, useMemo } from 'react';
-import { ChevronRight, ArrowRight, Laptop, Cpu, Database, MemoryStick, AlertTriangle, TrendingUp, Info } from 'lucide-react';
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Configurateur HP - Analyse de Prix</title>
+    
+    <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://unpkg.com/lucide-react@latest"></script>
+</head>
+<body class="bg-slate-50">
+    <div id="root"></div>
 
-const DATA = {
-  laptops: [
-    {
-      id: 'eb6g1a14',
-      name: 'HP EliteBook 6 G1a 14',
-      image: 'https://images.unsplash.com/photo-1588872657578-7efd1f1555ed?q=80&w=800&auto=format&fit=crop',
-      basePrice24: 603.46,
-      basePrice02: 936.21,
-      options: {
-        ram: [
-          { label: '16 Go (Standard)', p24: 0, p02: 0 },
-          { label: '32 Go', p24: 47.58, p02: 289.58 },
-          { label: '64 Go', p24: 213.37, p02: 939.37 }
-        ],
-        ssd: [
-          { label: '256 Go (Standard)', p24: 0, p02: 0 },
-          { label: '512 Go', p24: 18.25, p02: 48.50 },
-          { label: '1 To', p24: 83.27, p02: 174.02 }
-        ],
-        cpu: [
-          { label: 'Processeur Standard', p24: 0, p02: 0 },
-          { label: 'R7 PRO', p24: 173.13, p02: 173.13 }
-        ]
-      }
-    },
-    {
-      id: 'eb660g11',
-      name: 'HP Elitebook 660 G11',
-      image: 'https://images.unsplash.com/photo-1496181133206-80ce9b88a853?q=80&w=800&auto=format&fit=crop',
-      basePrice24: 663.64,
-      basePrice02: 1026.64,
-      options: {
-        ram: [
-          { label: '16 Go (Standard)', p24: 0, p02: 0 },
-          { label: '32 Go', p24: 42.28, p02: 284.28 },
-          { label: '64 Go', p24: 128.80, p02: 854.80 }
-        ],
-        ssd: [
-          { label: '512 Go (Standard)', p24: 0, p02: 0 },
-          { label: '1 To', p24: 84.57, p02: 145.07 }
-        ],
-        cpu: [
-          { label: 'Processeur Standard', p24: 0, p02: 0 },
-          { label: 'U7-165U', p24: 221.19, p02: 221.19 }
-        ]
-      }
-    },
-    {
-      id: 'eb660g11gpu',
-      name: 'HP EliteBook 660 G11 (GPU)',
-      image: 'https://images.unsplash.com/photo-1593642632823-8f785ba67e45?q=80&w=800&auto=format&fit=crop',
-      basePrice24: 764.78,
-      basePrice02: 1369.78,
-      options: {
-        ram: [
-          { label: '32 Go (Standard)', p24: 0, p02: 0 },
-          { label: '64 Go', p24: 166.53, p02: 650.53 }
-        ],
-        ssd: [
-          { label: '512 Go (Standard)', p24: 0, p02: 0 },
-          { label: '1 To', p24: 85.87, p02: 146.37 }
-        ],
-        cpu: [{ label: 'Standard', p24: 0, p02: 0 }]
-      }
-    },
-    {
-      id: 'eb8flip',
-      name: 'HP EliteBook 8 G1i Flip AI',
-      image: 'https://images.unsplash.com/photo-1541807084-5c52b6b3adef?q=80&w=800&auto=format&fit=crop',
-      basePrice24: 990.23,
-      basePrice02: 1353.23,
-      options: {
-        ram: [
-          { label: '16 Go (Standard)', p24: 0, p02: 0 },
-          { label: '32 Go', p24: 82.07, p02: 324.07 }
-        ],
-        ssd: [
-          { label: '512 Go (Standard)', p24: 0, p02: 0 },
-          { label: '1 To', p24: 71.56, p02: 132.06 }
-        ],
-        cpu: [
-          { label: 'Standard', p24: 0, p02: 0 },
-          { label: 'U7-165U', p24: 476.20, p02: 476.20 }
-        ]
-      }
-    },
-    {
-      id: 'eb840g11',
-      name: 'HP EliteBook 840 G11',
-      image: 'https://images.unsplash.com/photo-1525547719571-a2d4ac8945e2?q=80&w=800&auto=format&fit=crop',
-      basePrice24: 1379.64,
-      basePrice02: 1742.64,
-      options: {
-        ram: [
-          { label: '16 Go (Standard)', p24: 0, p02: 0 },
-          { label: '32 Go', p24: 114.49, p02: 356.49 },
-          { label: '64 Go', p24: 342.19, p02: 1068.19 }
-        ],
-        ssd: [
-          { label: '512 Go (Standard)', p24: 0, p02: 0 },
-          { label: '1 To', p24: 88.48, p02: 148.98 }
-        ],
-        cpu: [
-          { label: 'Standard', p24: 0, p02: 0 },
-          { label: 'U7-155U', p24: 268.03, p02: 268.03 }
-        ]
-      }
-    },
-    {
-      id: 'eb860g11',
-      name: 'HP EliteBook 860 G11',
-      image: 'https://images.unsplash.com/photo-1517336714731-489689fd1ca8?q=80&w=800&auto=format&fit=crop',
-      basePrice24: 1437.20,
-      basePrice02: 1800.20,
-      options: {
-        ram: [
-          { label: '16 Go (Standard)', p24: 0, p02: 0 },
-          { label: '32 Go', p24: 114.49, p02: 356.49 },
-          { label: '64 Go', p24: 342.19, p02: 1068.19 }
-        ],
-        ssd: [
-          { label: '512 Go (Standard)', p24: 0, p02: 0 },
-          { label: '1 To', p24: 88.48, p02: 148.98 }
-        ],
-        cpu: [{ label: 'Standard', p24: 0, p02: 0 }]
-      }
-    },
-    {
-      id: 'zbfirefly14',
-      name: 'HP ZBook Firefly 14 G11',
-      image: 'https://images.unsplash.com/photo-1544006659-f0b21f04cb1d?q=80&w=800&auto=format&fit=crop',
-      basePrice24: 1477.51,
-      basePrice02: 2081.90,
-      options: {
-        ram: [
-          { label: '32 Go (Standard)', p24: 0, p02: 0 },
-          { label: '64 Go', p24: 227.69, p02: 711.69 }
-        ],
-        ssd: [
-          { label: '512 Go (Standard)', p24: 0, p02: 0 },
-          { label: '1 To', p24: 88.48, p02: 148.98 }
-        ],
-        cpu: [{ label: 'Standard', p24: 0, p02: 0 }]
-      }
-    },
-    {
-      id: 'zbfury16',
-      name: 'HP ZBook Fury 16 G11',
-      image: 'https://images.unsplash.com/photo-1537498425277-c283d32ef9db?q=80&w=800&auto=format&fit=crop',
-      basePrice24: 2308.80,
-      basePrice02: 2913.80,
-      options: {
-        ram: [
-          { label: '32 Go (Standard)', p24: 0, p02: 0 },
-          { label: '64 Go', p24: 211.24, p02: 695.24 },
-          { label: '128 Go', p24: 349.33, p02: 1801.33 }
-        ],
-        ssd: [
-          { label: '512 Go (Standard)', p24: 0, p02: 0 },
-          { label: '1 To', p24: 88.34, p02: 148.84 }
-        ],
-        cpu: [
-          { label: 'Standard', p24: 0, p02: 0 },
-          { label: 'i9-13950HX', p24: 1099.44, p02: 1099.44 }
-        ]
-      }
-    }
-  ]
-};
+    <script type="text/babel">
+        const { useState, useMemo } = React;
+        const { 
+            ChevronRight, ArrowRight, Laptop, Cpu, 
+            Database, MemoryStick, AlertTriangle, TrendingUp, Info 
+        } = lucide;
 
-export default function App() {
-  const [selectedLaptopId, setSelectedLaptopId] = useState(DATA.laptops[0].id);
-  const [selections, setSelections] = useState({
-    ram: 0,
-    ssd: 0,
-    cpu: 0
-  });
+        const DATA = {
+          laptops: [
+            {
+              id: 'eb6g1a14',
+              name: 'HP EliteBook 6 G1a 14',
+              image: 'https://images.unsplash.com/photo-1588872657578-7efd1f1555ed?q=80&w=800&auto=format&fit=crop',
+              basePrice24: 603.46,
+              basePrice02: 936.21,
+              options: {
+                ram: [
+                  { label: '16 Go (Standard)', p24: 0, p02: 0 },
+                  { label: '32 Go', p24: 47.58, p02: 289.58 },
+                  { label: '64 Go', p24: 213.37, p02: 939.37 }
+                ],
+                ssd: [
+                  { label: '256 Go (Standard)', p24: 0, p02: 0 },
+                  { label: '512 Go', p24: 18.25, p02: 48.50 },
+                  { label: '1 To', p24: 83.27, p02: 174.02 }
+                ],
+                cpu: [
+                  { label: 'Processeur Standard', p24: 0, p02: 0 },
+                  { label: 'R7 PRO', p24: 173.13, p02: 173.13 }
+                ]
+              }
+            },
+            {
+              id: 'eb660g11',
+              name: 'HP Elitebook 660 G11',
+              image: 'https://images.unsplash.com/photo-1496181133206-80ce9b88a853?q=80&w=800&auto=format&fit=crop',
+              basePrice24: 663.64,
+              basePrice02: 1026.64,
+              options: {
+                ram: [
+                  { label: '16 Go (Standard)', p24: 0, p02: 0 },
+                  { label: '32 Go', p24: 42.28, p02: 284.28 },
+                  { label: '64 Go', p24: 128.80, p02: 854.80 }
+                ],
+                ssd: [
+                  { label: '512 Go (Standard)', p24: 0, p02: 0 },
+                  { label: '1 To', p24: 84.57, p02: 145.07 }
+                ],
+                cpu: [
+                  { label: 'Processeur Standard', p24: 0, p02: 0 },
+                  { label: 'U7-165U', p24: 221.19, p02: 221.19 }
+                ]
+              }
+            },
+            {
+              id: 'eb660g11gpu',
+              name: 'HP EliteBook 660 G11 (GPU)',
+              image: 'https://images.unsplash.com/photo-1593642632823-8f785ba67e45?q=80&w=800&auto=format&fit=crop',
+              basePrice24: 764.78,
+              basePrice02: 1369.78,
+              options: {
+                ram: [
+                  { label: '32 Go (Standard)', p24: 0, p02: 0 },
+                  { label: '64 Go', p24: 166.53, p02: 650.53 }
+                ],
+                ssd: [
+                  { label: '512 Go (Standard)', p24: 0, p02: 0 },
+                  { label: '1 To', p24: 85.87, p02: 146.37 }
+                ],
+                cpu: [{ label: 'Standard', p24: 0, p02: 0 }]
+              }
+            },
+            {
+              id: 'eb8flip',
+              name: 'HP EliteBook 8 G1i Flip AI',
+              image: 'https://images.unsplash.com/photo-1541807084-5c52b6b3adef?q=80&w=800&auto=format&fit=crop',
+              basePrice24: 990.23,
+              basePrice02: 1353.23,
+              options: {
+                ram: [
+                  { label: '16 Go (Standard)', p24: 0, p02: 0 },
+                  { label: '32 Go', p24: 82.07, p02: 324.07 }
+                ],
+                ssd: [
+                  { label: '512 Go (Standard)', p24: 0, p02: 0 },
+                  { label: '1 To', p24: 71.56, p02: 132.06 }
+                ],
+                cpu: [
+                  { label: 'Standard', p24: 0, p02: 0 },
+                  { label: 'U7-165U', p24: 476.20, p02: 476.20 }
+                ]
+              }
+            },
+            {
+              id: 'eb840g11',
+              name: 'HP EliteBook 840 G11',
+              image: 'https://images.unsplash.com/photo-1525547719571-a2d4ac8945e2?q=80&w=800&auto=format&fit=crop',
+              basePrice24: 1379.64,
+              basePrice02: 1742.64,
+              options: {
+                ram: [
+                  { label: '16 Go (Standard)', p24: 0, p02: 0 },
+                  { label: '32 Go', p24: 114.49, p02: 356.49 },
+                  { label: '64 Go', p24: 342.19, p02: 1068.19 }
+                ],
+                ssd: [
+                  { label: '512 Go (Standard)', p24: 0, p02: 0 },
+                  { label: '1 To', p24: 88.48, p02: 148.98 }
+                ],
+                cpu: [
+                  { label: 'Standard', p24: 0, p02: 0 },
+                  { label: 'U7-155U', p24: 268.03, p02: 268.03 }
+                ]
+              }
+            },
+            {
+              id: 'eb860g11',
+              name: 'HP EliteBook 860 G11',
+              image: 'https://images.unsplash.com/photo-1517336714731-489689fd1ca8?q=80&w=800&auto=format&fit=crop',
+              basePrice24: 1437.20,
+              basePrice02: 1800.20,
+              options: {
+                ram: [
+                  { label: '16 Go (Standard)', p24: 0, p02: 0 },
+                  { label: '32 Go', p24: 114.49, p02: 356.49 },
+                  { label: '64 Go', p24: 342.19, p02: 1068.19 }
+                ],
+                ssd: [
+                  { label: '512 Go (Standard)', p24: 0, p02: 0 },
+                  { label: '1 To', p24: 88.48, p02: 148.98 }
+                ],
+                cpu: [{ label: 'Standard', p24: 0, p02: 0 }]
+              }
+            },
+            {
+              id: 'zbfirefly14',
+              name: 'HP ZBook Firefly 14 G11',
+              image: 'https://images.unsplash.com/photo-1544006659-f0b21f04cb1d?q=80&w=800&auto=format&fit=crop',
+              basePrice24: 1477.51,
+              basePrice02: 2081.90,
+              options: {
+                ram: [
+                  { label: '32 Go (Standard)', p24: 0, p02: 0 },
+                  { label: '64 Go', p24: 227.69, p02: 711.69 }
+                ],
+                ssd: [
+                  { label: '512 Go (Standard)', p24: 0, p02: 0 },
+                  { label: '1 To', p24: 88.48, p02: 148.98 }
+                ],
+                cpu: [{ label: 'Standard', p24: 0, p02: 0 }]
+              }
+            },
+            {
+              id: 'zbfury16',
+              name: 'HP ZBook Fury 16 G11',
+              image: 'https://images.unsplash.com/photo-1537498425277-c283d32ef9db?q=80&w=800&auto=format&fit=crop',
+              basePrice24: 2308.80,
+              basePrice02: 2913.80,
+              options: {
+                ram: [
+                  { label: '32 Go (Standard)', p24: 0, p02: 0 },
+                  { label: '64 Go', p24: 211.24, p02: 695.24 },
+                  { label: '128 Go', p24: 349.33, p02: 1801.33 }
+                ],
+                ssd: [
+                  { label: '512 Go (Standard)', p24: 0, p02: 0 },
+                  { label: '1 To', p24: 88.34, p02: 148.84 }
+                ],
+                cpu: [
+                  { label: 'Standard', p24: 0, p02: 0 },
+                  { label: 'i9-13950HX', p24: 1099.44, p02: 1099.44 }
+                ]
+              }
+            }
+          ]
+        };
 
-  const selectedLaptop = useMemo(() => 
-    DATA.laptops.find(l => l.id === selectedLaptopId), 
-    [selectedLaptopId]
-  );
+        function App() {
+          const [selectedLaptopId, setSelectedLaptopId] = useState(DATA.laptops[0].id);
+          const [selections, setSelections] = useState({
+            ram: 0,
+            ssd: 0,
+            cpu: 0
+          });
 
-  const handleLaptopChange = (id) => {
-    setSelectedLaptopId(id);
-    setSelections({ ram: 0, ssd: 0, cpu: 0 });
-  };
+          const selectedLaptop = useMemo(() => 
+            DATA.laptops.find(l => l.id === selectedLaptopId), 
+            [selectedLaptopId]
+          );
 
-  const calculateTotals = () => {
-    let total24 = selectedLaptop.basePrice24;
-    let total02 = selectedLaptop.basePrice02;
+          const handleLaptopChange = (id) => {
+            setSelectedLaptopId(id);
+            setSelections({ ram: 0, ssd: 0, cpu: 0 });
+          };
 
-    total24 += selectedLaptop.options.ram[selections.ram]?.p24 || 0;
-    total02 += selectedLaptop.options.ram[selections.ram]?.p02 || 0;
+          const calculateTotals = () => {
+            let total24 = selectedLaptop.basePrice24;
+            let total02 = selectedLaptop.basePrice02;
 
-    total24 += selectedLaptop.options.ssd[selections.ssd]?.p24 || 0;
-    total02 += selectedLaptop.options.ssd[selections.ssd]?.p02 || 0;
+            total24 += selectedLaptop.options.ram[selections.ram]?.p24 || 0;
+            total02 += selectedLaptop.options.ram[selections.ram]?.p02 || 0;
 
-    total24 += selectedLaptop.options.cpu[selections.cpu]?.p24 || 0;
-    total02 += selectedLaptop.options.cpu[selections.cpu]?.p02 || 0;
+            total24 += selectedLaptop.options.ssd[selections.ssd]?.p24 || 0;
+            total02 += selectedLaptop.options.ssd[selections.ssd]?.p02 || 0;
 
-    return { total24, total02 };
-  };
+            total24 += selectedLaptop.options.cpu[selections.cpu]?.p24 || 0;
+            total02 += selectedLaptop.options.cpu[selections.cpu]?.p02 || 0;
 
-  const { total24, total02 } = calculateTotals();
-  const diffEuro = total02 - total24;
-  const diffPercent = (diffEuro / total24) * 100;
+            return { total24, total02 };
+          };
 
-  return (
-    <div className="min-h-screen bg-slate-50 text-slate-900 font-sans p-4 md:p-8">
-      <div className="max-w-6xl mx-auto">
-        {/* Header */}
-        <header className="mb-8 flex flex-col md:flex-row md:items-center justify-between gap-4">
-          <div>
-            <h1 className="text-3xl font-bold tracking-tight text-slate-900">Configurateur HP</h1>
-            <p className="text-slate-500 mt-1">Analyse comparative des prix (TVAC 21%) : 24 Mars vs 2 Avril</p>
-          </div>
-          <div className="flex items-center gap-2 px-4 py-2 bg-amber-100 text-amber-800 rounded-full text-sm font-medium border border-amber-200">
-            <AlertTriangle size={16} />
-            Hausse moyenne détectée : +35%
-          </div>
-        </header>
+          const { total24, total02 } = calculateTotals();
+          const diffEuro = total02 - total24;
+          const diffPercent = (diffEuro / total24) * 100;
 
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-          
-          {/* Main Configurator */}
-          <div className="lg:col-span-8 space-y-6">
-            
-            {/* Step 1: Laptop Choice */}
-            <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
-              <div className="flex items-center gap-2 mb-4 text-slate-400">
-                <Laptop size={20} />
-                <span className="uppercase text-xs font-bold tracking-wider">1. Choisir le modèle</span>
-              </div>
-              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
-                {DATA.laptops.map((l) => (
-                  <button
-                    key={l.id}
-                    onClick={() => handleLaptopChange(l.id)}
-                    className={`text-left p-3 rounded-xl border-2 transition-all ${
-                      selectedLaptopId === l.id 
-                      ? 'border-blue-500 bg-blue-50' 
-                      : 'border-slate-100 hover:border-slate-300 bg-white'
-                    }`}
-                  >
-                    <div className="text-sm font-semibold truncate">{l.name}</div>
-                    <div className="text-xs text-slate-500 mt-1">Base: {l.basePrice24.toFixed(2)}€</div>
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            {/* Laptop Preview & Options */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {/* Preview Image */}
-              <div className="bg-white p-2 rounded-2xl shadow-sm border border-slate-200 flex items-center justify-center overflow-hidden">
-                <img 
-                  src={selectedLaptop.image} 
-                  alt={selectedLaptop.name} 
-                  className="w-full h-48 object-cover rounded-xl"
-                  onError={(e) => { e.target.src = 'https://images.unsplash.com/photo-1496181133206-80ce9b88a853?q=80&w=800&auto=format&fit=crop'; }}
-                />
-              </div>
-
-              {/* Step 2: Options */}
-              <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 space-y-6">
-                
-                {/* Memory */}
-                <div className="space-y-3">
-                  <div className="flex items-center gap-2 text-slate-400">
-                    <MemoryStick size={18} />
-                    <span className="uppercase text-xs font-bold tracking-wider">RAM</span>
+          return (
+            <div className="min-h-screen text-slate-900 font-sans p-4 md:p-8">
+              <div className="max-w-6xl mx-auto">
+                <header className="mb-8 flex flex-col md:flex-row md:items-center justify-between gap-4">
+                  <div>
+                    <h1 className="text-3xl font-bold tracking-tight text-slate-900">Configurateur HP</h1>
+                    <p className="text-slate-500 mt-1">Analyse comparative des prix (TVAC 21%) : 24 Mars vs 2 Avril</p>
                   </div>
-                  <div className="flex flex-wrap gap-2">
-                    {selectedLaptop.options.ram.map((opt, idx) => (
-                      <button
-                        key={idx}
-                        onClick={() => setSelections({...selections, ram: idx})}
-                        className={`px-3 py-2 rounded-lg text-xs font-medium border transition-all ${
-                          selections.ram === idx 
-                          ? 'bg-slate-900 text-white border-slate-900' 
-                          : 'bg-white text-slate-600 border-slate-200 hover:border-slate-400'
-                        }`}
-                      >
-                        {opt.label}
-                      </button>
-                    ))}
+                  <div className="flex items-center gap-2 px-4 py-2 bg-amber-100 text-amber-800 rounded-full text-sm font-medium border border-amber-200">
+                    <AlertTriangle size={16} />
+                    Hausse moyenne détectée : +35%
                   </div>
-                </div>
+                </header>
 
-                {/* Storage */}
-                <div className="space-y-3">
-                  <div className="flex items-center gap-2 text-slate-400">
-                    <Database size={18} />
-                    <span className="uppercase text-xs font-bold tracking-wider">SSD</span>
-                  </div>
-                  <div className="flex flex-wrap gap-2">
-                    {selectedLaptop.options.ssd.map((opt, idx) => (
-                      <button
-                        key={idx}
-                        onClick={() => setSelections({...selections, ssd: idx})}
-                        className={`px-3 py-2 rounded-lg text-xs font-medium border transition-all ${
-                          selections.ssd === idx 
-                          ? 'bg-slate-900 text-white border-slate-900' 
-                          : 'bg-white text-slate-600 border-slate-200 hover:border-slate-400'
-                        }`}
-                      >
-                        {opt.label}
-                      </button>
-                    ))}
-                  </div>
-                </div>
+                <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+                  <div className="lg:col-span-8 space-y-6">
+                    <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+                      <div className="flex items-center gap-2 mb-4 text-slate-400">
+                        <Laptop size={20} />
+                        <span className="uppercase text-xs font-bold tracking-wider">1. Choisir le modèle</span>
+                      </div>
+                      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
+                        {DATA.laptops.map((l) => (
+                          <button
+                            key={l.id}
+                            onClick={() => handleLaptopChange(l.id)}
+                            className={`text-left p-3 rounded-xl border-2 transition-all ${
+                              selectedLaptopId === l.id 
+                              ? 'border-blue-500 bg-blue-50' 
+                              : 'border-slate-100 hover:border-slate-300 bg-white'
+                            }`}
+                          >
+                            <div className="text-sm font-semibold truncate">{l.name}</div>
+                            <div className="text-xs text-slate-500 mt-1">Base: {l.basePrice24.toFixed(2)}€</div>
+                          </button>
+                        ))}
+                      </div>
+                    </div>
 
-                {/* CPU */}
-                <div className="space-y-3">
-                  <div className="flex items-center gap-2 text-slate-400">
-                    <Cpu size={18} />
-                    <span className="uppercase text-xs font-bold tracking-wider">PROCESSEUR</span>
-                  </div>
-                  <div className="flex flex-wrap gap-2">
-                    {selectedLaptop.options.cpu.map((opt, idx) => (
-                      <button
-                        key={idx}
-                        onClick={() => setSelections({...selections, cpu: idx})}
-                        className={`px-3 py-2 rounded-lg text-xs font-medium border transition-all ${
-                          selections.cpu === idx 
-                          ? 'bg-slate-900 text-white border-slate-900' 
-                          : 'bg-white text-slate-600 border-slate-200 hover:border-slate-400'
-                        }`}
-                      >
-                        {opt.label}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-              </div>
-            </div>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      <div className="bg-white p-2 rounded-2xl shadow-sm border border-slate-200 flex items-center justify-center overflow-hidden">
+                        <img 
+                          src={selectedLaptop.image} 
+                          alt={selectedLaptop.name} 
+                          className="w-full h-48 object-cover rounded-xl"
+                        />
+                      </div>
 
-            {/* Analysis Note */}
-            <div className="bg-blue-50 border border-blue-100 p-4 rounded-xl flex gap-3">
-              <Info className="text-blue-500 shrink-0" size={20} />
-              <p className="text-sm text-blue-700">
-                <strong>Analyse :</strong> Les options de processeur sont les seules à ne pas avoir augmenté (0%). À l'inverse, la RAM a subi des hausses massives, particulièrement sur la gamme EliteBook 600.
-              </p>
-            </div>
+                      <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 space-y-6">
+                        <div className="space-y-3">
+                          <div className="flex items-center gap-2 text-slate-400">
+                            <MemoryStick size={18} />
+                            <span className="uppercase text-xs font-bold tracking-wider">RAM</span>
+                          </div>
+                          <div className="flex flex-wrap gap-2">
+                            {selectedLaptop.options.ram.map((opt, idx) => (
+                              <button
+                                key={idx}
+                                onClick={() => setSelections({...selections, ram: idx})}
+                                className={`px-3 py-2 rounded-lg text-xs font-medium border transition-all ${
+                                  selections.ram === idx 
+                                  ? 'bg-slate-900 text-white border-slate-900' 
+                                  : 'bg-white text-slate-600 border-slate-200 hover:border-slate-400'
+                                }`}
+                              >
+                                {opt.label}
+                              </button>
+                            ))}
+                          </div>
+                        </div>
 
-          </div>
+                        <div className="space-y-3">
+                          <div className="flex items-center gap-2 text-slate-400">
+                            <Database size={18} />
+                            <span className="uppercase text-xs font-bold tracking-wider">SSD</span>
+                          </div>
+                          <div className="flex flex-wrap gap-2">
+                            {selectedLaptop.options.ssd.map((opt, idx) => (
+                              <button
+                                key={idx}
+                                onClick={() => setSelections({...selections, ssd: idx})}
+                                className={`px-3 py-2 rounded-lg text-xs font-medium border transition-all ${
+                                  selections.ssd === idx 
+                                  ? 'bg-slate-900 text-white border-slate-900' 
+                                  : 'bg-white text-slate-600 border-slate-200 hover:border-slate-400'
+                                }`}
+                              >
+                                {opt.label}
+                              </button>
+                            ))}
+                          </div>
+                        </div>
 
-          {/* Result Sidebar */}
-          <div className="lg:col-span-4 space-y-6">
-            <div className="bg-white rounded-2xl shadow-xl border border-slate-200 overflow-hidden sticky top-8">
-              <div className="bg-slate-900 p-6 text-white">
-                <h3 className="text-lg font-bold">Récapitulatif</h3>
-                <p className="text-slate-400 text-sm mt-1">{selectedLaptop.name}</p>
-              </div>
+                        <div className="space-y-3">
+                          <div className="flex items-center gap-2 text-slate-400">
+                            <Cpu size={18} />
+                            <span className="uppercase text-xs font-bold tracking-wider">PROCESSEUR</span>
+                          </div>
+                          <div className="flex flex-wrap gap-2">
+                            {selectedLaptop.options.cpu.map((opt, idx) => (
+                              <button
+                                key={idx}
+                                onClick={() => setSelections({...selections, cpu: idx})}
+                                className={`px-3 py-2 rounded-lg text-xs font-medium border transition-all ${
+                                  selections.cpu === idx 
+                                  ? 'bg-slate-900 text-white border-slate-900' 
+                                  : 'bg-white text-slate-600 border-slate-200 hover:border-slate-400'
+                                }`}
+                              >
+                                {opt.label}
+                              </button>
+                            ))}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
 
-              <div className="p-6 space-y-6">
-                
-                {/* Comparison Card */}
-                <div className="space-y-4">
-                  {/* Before */}
-                  <div className="p-4 rounded-xl bg-slate-50 border border-slate-100">
-                    <div className="text-xs font-bold text-slate-400 uppercase mb-1">Prix au 24/03</div>
-                    <div className="text-2xl font-bold text-slate-600">{total24.toLocaleString('fr-FR', { minimumFractionDigits: 2 })} €</div>
-                    <div className="text-[10px] text-slate-400 mt-1">Options inclues TVAC</div>
-                  </div>
-
-                  <div className="flex justify-center -my-3 relative z-10">
-                    <div className="bg-white p-1 rounded-full shadow-md border border-slate-100">
-                      <ChevronRight className="rotate-90 text-slate-400" size={24} />
+                    <div className="bg-blue-50 border border-blue-100 p-4 rounded-xl flex gap-3">
+                      <Info className="text-blue-500 shrink-0" size={20} />
+                      <p className="text-sm text-blue-700">
+                        <strong>Analyse :</strong> Les options de processeur sont les seules à ne pas avoir augmenté (0%). À l'inverse, la RAM a subi des hausses massives.
+                      </p>
                     </div>
                   </div>
 
-                  {/* After */}
-                  <div className="p-4 rounded-xl bg-red-50 border border-red-100">
-                    <div className="text-xs font-bold text-red-400 uppercase mb-1">Prix au 02/04</div>
-                    <div className="text-3xl font-black text-red-600">{total02.toLocaleString('fr-FR', { minimumFractionDigits: 2 })} €</div>
-                    <div className="text-[10px] text-red-400 mt-1">Options inclues TVAC</div>
+                  <div className="lg:col-span-4 space-y-6">
+                    <div className="bg-white rounded-2xl shadow-xl border border-slate-200 overflow-hidden sticky top-8">
+                      <div className="bg-slate-900 p-6 text-white">
+                        <h3 className="text-lg font-bold">Récapitulatif</h3>
+                        <p className="text-slate-400 text-sm mt-1">{selectedLaptop.name}</p>
+                      </div>
+
+                      <div className="p-6 space-y-6">
+                        <div className="space-y-4">
+                          <div className="p-4 rounded-xl bg-slate-50 border border-slate-100">
+                            <div className="text-xs font-bold text-slate-400 uppercase mb-1">Prix au 24/03</div>
+                            <div className="text-2xl font-bold text-slate-600">{total24.toLocaleString('fr-FR', { minimumFractionDigits: 2 })} €</div>
+                          </div>
+                          <div className="flex justify-center -my-3 relative z-10">
+                            <div className="bg-white p-1 rounded-full shadow-md border border-slate-100">
+                              <ChevronRight className="rotate-90 text-slate-400" size={24} />
+                            </div>
+                          </div>
+                          <div className="p-4 rounded-xl bg-red-50 border border-red-100">
+                            <div className="text-xs font-bold text-red-400 uppercase mb-1">Prix au 02/04</div>
+                            <div className="text-3xl font-black text-red-600">{total02.toLocaleString('fr-FR', { minimumFractionDigits: 2 })} €</div>
+                          </div>
+                        </div>
+
+                        <div className="pt-4 border-t border-slate-100">
+                          <div className="flex items-center justify-between mb-2">
+                            <span className="text-sm font-medium text-slate-500 uppercase tracking-wide">Différence Totale</span>
+                            <span className="flex items-center gap-1 text-red-600 font-bold">
+                              <TrendingUp size={16} />
+                              +{diffPercent.toFixed(2)}%
+                            </span>
+                          </div>
+                          <div className="text-xl font-bold text-slate-900">
+                            +{diffEuro.toLocaleString('fr-FR', { minimumFractionDigits: 2 })} €
+                          </div>
+                        </div>
+
+                        <button className="w-full bg-slate-900 text-white py-4 rounded-xl font-bold flex items-center justify-center gap-2 hover:bg-slate-800 transition-colors">
+                          Exporter la config
+                          <ArrowRight size={18} />
+                        </button>
+                      </div>
+                    </div>
                   </div>
                 </div>
 
-                {/* Increase Highlight */}
-                <div className="pt-4 border-t border-slate-100">
-                  <div className="flex items-center justify-between mb-2">
-                    <span className="text-sm font-medium text-slate-500 uppercase tracking-wide">Différence Totale</span>
-                    <span className="flex items-center gap-1 text-red-600 font-bold">
-                      <TrendingUp size={16} />
-                      +{diffPercent.toFixed(2)}%
-                    </span>
-                  </div>
-                  <div className="text-xl font-bold text-slate-900">
-                    +{diffEuro.toLocaleString('fr-FR', { minimumFractionDigits: 2 })} €
-                  </div>
-                </div>
-
-                {/* Action */}
-                <button className="w-full bg-slate-900 text-white py-4 rounded-xl font-bold flex items-center justify-center gap-2 hover:bg-slate-800 transition-colors">
-                  Exporter la config
-                  <ArrowRight size={18} />
-                </button>
+                <footer className="mt-12 text-center text-slate-400 text-xs">
+                  Données extraites de l'Analyse exhaustive de l'augmentation des prix HP • TVA 21%
+                </footer>
               </div>
             </div>
-          </div>
+          );
+        }
 
-        </div>
-
-        {/* Footer info */}
-        <footer className="mt-12 text-center text-slate-400 text-xs">
-          Données extraites de l'Analyse exhaustive de l'augmentation des prix HP • Calculs basés sur TVA 21%
-        </footer>
-      </div>
-    </div>
-  );
-}
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+</body>
+</html>
